@@ -1,6 +1,5 @@
-package com.gonx.criptotest.trade.ui.buy.model
+package com.gonx.criptotest.trade.ui.common.model
 
-import com.gonx.criptotest.trade.ui.common.model.UiTradeCoinItem
 import org.jetbrains.compose.resources.StringResource
 
 data class TradeState(

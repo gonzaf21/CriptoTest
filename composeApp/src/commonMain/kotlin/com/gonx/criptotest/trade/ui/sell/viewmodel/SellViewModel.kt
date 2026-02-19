@@ -1,4 +1,4 @@
-package com.gonx.criptotest.trade.ui.buy.viewmodel
+package com.gonx.criptotest.trade.ui.sell.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,23 +7,22 @@ import com.gonx.criptotest.core.domain.Result
 import com.gonx.criptotest.core.util.formatFiat
 import com.gonx.criptotest.core.util.uiText
 import com.gonx.criptotest.portfolio.domain.PortfolioRepository
-import com.gonx.criptotest.trade.domain.usecase.BuyCoinUseCase
+import com.gonx.criptotest.trade.domain.usecase.SellCoinUseCase
 import com.gonx.criptotest.trade.mapper.toCoin
 import com.gonx.criptotest.trade.ui.common.model.TradeState
 import com.gonx.criptotest.trade.ui.common.model.UiTradeCoinItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BuyViewModel(
+class SellViewModel(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
     private val portfolioRepository: PortfolioRepository,
-    private val buyCoinUseCase: BuyCoinUseCase
+    private val sellCoinUseCase: SellCoinUseCase
 ) : ViewModel() {
     private val tempCoinId = "1" // TODO: Will be removed when passed as safe arg
     private val _amount = MutableStateFlow("")
@@ -36,17 +35,32 @@ class BuyViewModel(
             amount = amount,
         )
     }.onStart {
-        val balance = portfolioRepository.cashBalance().first()
-        getCoinsDetails(balance)
+        when (val portfolioCoinResponse = portfolioRepository.getPortfolioCoin(tempCoinId)) {
+            is Result.Success -> {
+                portfolioCoinResponse.data?.ownedAmountInUnit?.let {
+                    getCoinsDetails(it)
+                }
+            }
+
+            is Result.Error -> {
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = portfolioCoinResponse.error.uiText()
+                    )
+                }
+            }
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = TradeState(isLoading = true)
     )
 
-    private suspend fun getCoinsDetails(balance: Double) {
+    private suspend fun getCoinsDetails(ownedAmountInUnit: Double) {
         when (val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)) {
             is Result.Success -> {
+                val availableAmountInFiat = ownedAmountInUnit * coinResponse.data.price
                 _state.update {
                     it.copy(
                         coin = UiTradeCoinItem(
@@ -54,9 +68,9 @@ class BuyViewModel(
                             name = coinResponse.data.coin.name,
                             symbol = coinResponse.data.coin.symbol,
                             iconUrl = coinResponse.data.coin.iconUrl,
-                            price = coinResponse.data.price
+                            price = coinResponse.data.price,
                         ),
-                        availableAmount = "Available: ${formatFiat(balance)}"
+                        availableAmount = "Available: ${formatFiat(availableAmountInFiat)}"
                     )
                 }
             }
@@ -76,16 +90,16 @@ class BuyViewModel(
         _amount.value = amount
     }
 
-    fun onBuyClick() {
+    fun onSellClick() {
         val tradeCoin = state.value.coin ?: return
         viewModelScope.launch {
-            val buyCoinResponse = buyCoinUseCase(
+            val sellCoinResponse = sellCoinUseCase(
                 coin = tradeCoin.toCoin(),
                 amountInFiat = _amount.value.toDouble(),
                 price = tradeCoin.price,
             )
 
-            when (buyCoinResponse) {
+            when (sellCoinResponse) {
                 is Result.Success -> {
                     // TODO: Navigate to next screen with event
                 }
@@ -94,7 +108,7 @@ class BuyViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            error = buyCoinResponse.error.uiText()
+                            error = sellCoinResponse.error.uiText()
                         )
                     }
                 }

@@ -13,7 +13,10 @@ import com.gonx.criptotest.core.network.HttpClientFactory
 import com.gonx.criptotest.portfolio.data.PortfolioRepositoryImpl
 import com.gonx.criptotest.portfolio.domain.PortfolioRepository
 import com.gonx.criptotest.portfolio.ui.viewmodel.PortfolioViewModel
+import com.gonx.criptotest.trade.domain.usecase.BuyCoinUseCase
+import com.gonx.criptotest.trade.domain.usecase.SellCoinUseCase
 import com.gonx.criptotest.trade.ui.buy.viewmodel.BuyViewModel
+import com.gonx.criptotest.trade.ui.sell.viewmodel.SellViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -50,5 +53,8 @@ val sharedModule: Module = module {
     singleOf(::GetCoinDetailsUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
     // trade
+    singleOf(::BuyCoinUseCase)
+    singleOf(::SellCoinUseCase)
     viewModel { BuyViewModel(get(), get(), get()) }
+    viewModel { SellViewModel(get(), get(), get()) }
 }
