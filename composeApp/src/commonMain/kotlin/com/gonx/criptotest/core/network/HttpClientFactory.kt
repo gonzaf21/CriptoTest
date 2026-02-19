@@ -28,6 +28,7 @@ object HttpClientFactory {
             }
             install(HttpCache)
             defaultRequest {
+                // TODO: Secure with secrets before uploading
                 headers { append("x-access-token", "")}
                 contentType(ContentType.Application.Json)
             }

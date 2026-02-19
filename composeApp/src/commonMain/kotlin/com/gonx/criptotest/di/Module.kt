@@ -3,9 +3,9 @@ package com.gonx.criptotest.di
 import androidx.room.RoomDatabase
 import com.gonx.criptotest.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.gonx.criptotest.coins.domain.api.CoinsRemoteDataSource
-import com.gonx.criptotest.coins.domain.usecases.GetCoinDetailsUseCase
-import com.gonx.criptotest.coins.domain.usecases.GetCoinPriceHistoryUseCase
-import com.gonx.criptotest.coins.domain.usecases.GetCoinsListUseCase
+import com.gonx.criptotest.coins.domain.usecase.GetCoinDetailsUseCase
+import com.gonx.criptotest.coins.domain.usecase.GetCoinPriceHistoryUseCase
+import com.gonx.criptotest.coins.domain.usecase.GetCoinsListUseCase
 import com.gonx.criptotest.coins.ui.viewmodel.CoinsListViewModel
 import com.gonx.criptotest.core.database.PortfolioDatabase
 import com.gonx.criptotest.core.database.getPortfolioDatabase
@@ -13,6 +13,7 @@ import com.gonx.criptotest.core.network.HttpClientFactory
 import com.gonx.criptotest.portfolio.data.PortfolioRepositoryImpl
 import com.gonx.criptotest.portfolio.domain.PortfolioRepository
 import com.gonx.criptotest.portfolio.ui.viewmodel.PortfolioViewModel
+import com.gonx.criptotest.trade.ui.buy.viewmodel.BuyViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -48,4 +49,6 @@ val sharedModule: Module = module {
     singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
     singleOf(::GetCoinDetailsUseCase)
     singleOf(::GetCoinPriceHistoryUseCase)
+    // trade
+    viewModel { BuyViewModel(get(), get(), get()) }
 }

@@ -1,4 +1,4 @@
-package com.gonx.criptotest.coins.domain.usecases
+package com.gonx.criptotest.coins.domain.usecase
 
 import com.gonx.criptotest.coins.data.mapper.toCoinModel
 import com.gonx.criptotest.coins.domain.api.CoinsRemoteDataSource

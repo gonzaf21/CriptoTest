@@ -2,11 +2,11 @@ package com.gonx.criptotest.coins.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gonx.criptotest.coins.domain.usecases.GetCoinPriceHistoryUseCase
-import com.gonx.criptotest.coins.domain.usecases.GetCoinsListUseCase
-import com.gonx.criptotest.coins.ui.model.UiCoinListItem
+import com.gonx.criptotest.coins.domain.usecase.GetCoinPriceHistoryUseCase
+import com.gonx.criptotest.coins.domain.usecase.GetCoinsListUseCase
 import com.gonx.criptotest.coins.ui.model.CoinsState
 import com.gonx.criptotest.coins.ui.model.UiChartState
+import com.gonx.criptotest.coins.ui.model.UiCoinListItem
 import com.gonx.criptotest.core.domain.Result
 import com.gonx.criptotest.core.util.formatFiat
 import com.gonx.criptotest.core.util.formatPercentage
