@@ -100,8 +100,4 @@ class CoinsListViewModel(
     fun onDismissChart() {
         _state.update { it.copy(chartState = null) }
     }
-
-    fun onCoinClick(coinId: String) {
-
-    }
 }

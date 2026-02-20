@@ -43,7 +43,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CoinsListScreen() {
+fun CoinsListScreen(
+    onCoinClick: (String) -> Unit,
+) {
     val coinsListViewModel = koinViewModel<CoinsListViewModel>()
     val state by coinsListViewModel.state.collectAsStateWithLifecycle()
 
@@ -51,7 +53,7 @@ fun CoinsListScreen() {
         state = state,
         onDismiss = coinsListViewModel::onDismissChart,
         onCoinLongPress = coinsListViewModel::onCoinLongPress,
-        onCoinClick = coinsListViewModel::onCoinClick,
+        onCoinClick = onCoinClick,
     )
 }
 
