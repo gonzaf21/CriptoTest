@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.gonx.criptotest.theme.LocalCriptoTestColorsPalette
+import com.gonx.criptotest.trade.ui.common.component.rememberCurrencyVisualTransformation
 import com.gonx.criptotest.trade.ui.common.model.TradeState
 import org.jetbrains.compose.resources.stringResource
 
@@ -157,6 +158,7 @@ fun CenteredDollarTextField(
         focusRequester.requestFocus()
     }
 
+    val currencyVisualTransformation = rememberCurrencyVisualTransformation()
     val displayText = amountText.trimStart('$')
 
     BasicTextField(
@@ -186,7 +188,8 @@ fun CenteredDollarTextField(
                 innerTextField()
             }
         },
-        cursorBrush = SolidColor(Color.White)
+        cursorBrush = SolidColor(Color.White),
+        visualTransformation = currencyVisualTransformation,
     )
 }
 
