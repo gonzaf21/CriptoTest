@@ -7,16 +7,17 @@ import com.gonx.criptotest.trade.ui.buy.viewmodel.BuyViewModel
 import com.gonx.criptotest.trade.ui.common.TradeScreen
 import com.gonx.criptotest.trade.ui.common.TradeType
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BuyScreen(
     coinId: String,
     navigateToPortfolio: () -> Unit,
 ) {
-    val viewModel = koinViewModel<BuyViewModel>()
+    val viewModel = koinViewModel<BuyViewModel>(
+        parameters = { parametersOf(coinId) }
+    )
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    //TODO: handle coinId
 
     TradeScreen(
         state = state,

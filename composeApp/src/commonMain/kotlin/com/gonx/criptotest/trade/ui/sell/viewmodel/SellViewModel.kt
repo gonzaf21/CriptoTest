@@ -22,9 +22,9 @@ import kotlinx.coroutines.launch
 class SellViewModel(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
     private val portfolioRepository: PortfolioRepository,
-    private val sellCoinUseCase: SellCoinUseCase
+    private val sellCoinUseCase: SellCoinUseCase,
+    private val coinId: String,
 ) : ViewModel() {
-    private val tempCoinId = "1" // TODO: Will be removed when passed as safe arg
     private val _amount = MutableStateFlow("")
     private val _state = MutableStateFlow(TradeState())
     val state = combine(
@@ -35,7 +35,7 @@ class SellViewModel(
             amount = amount,
         )
     }.onStart {
-        when (val portfolioCoinResponse = portfolioRepository.getPortfolioCoin(tempCoinId)) {
+        when (val portfolioCoinResponse = portfolioRepository.getPortfolioCoin(coinId)) {
             is Result.Success -> {
                 portfolioCoinResponse.data?.ownedAmountInUnit?.let {
                     getCoinsDetails(it)
@@ -58,7 +58,7 @@ class SellViewModel(
     )
 
     private suspend fun getCoinsDetails(ownedAmountInUnit: Double) {
-        when (val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)) {
+        when (val coinResponse = getCoinDetailsUseCase.execute(coinId)) {
             is Result.Success -> {
                 val availableAmountInFiat = ownedAmountInUnit * coinResponse.data.price
                 _state.update {

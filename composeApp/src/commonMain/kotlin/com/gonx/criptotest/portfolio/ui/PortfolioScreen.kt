@@ -58,7 +58,7 @@ fun PortfolioScreen(
             )
         }
     } else {
-        PortfolioContent(state, {}, {})
+        PortfolioContent(state, onCoinItemClick, onDiscoverCoinsClick)
     }
 }
 

@@ -99,7 +99,7 @@ fun TradeScreen(
                     modifier = Modifier.padding(4.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = type,
                 style = MaterialTheme.typography.bodyMedium,
