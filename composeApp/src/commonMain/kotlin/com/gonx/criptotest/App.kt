@@ -6,9 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.gonx.criptotest.coins.ui.CoinsListScreen
-import com.gonx.criptotest.portfolio.ui.PortfolioScreen
 import com.gonx.criptotest.theme.CriptoTestTheme
+import com.gonx.criptotest.trade.ui.common.TradeScreen
+import com.gonx.criptotest.trade.ui.common.TradeType
+import com.gonx.criptotest.trade.ui.common.model.TradeState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 
@@ -19,10 +20,16 @@ fun App() {
         CriptoTestTheme {
             Scaffold { paddingValues ->
                 Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                    //CoinsListScreen()
-                    PortfolioScreen(
-                        onCoinItemClick = {},
-                        onDiscoverCoinsClick = {}
+//                    CoinsListScreen()
+//                    PortfolioScreen(
+//                        onCoinItemClick = {},
+//                        onDiscoverCoinsClick = {}
+//                    )
+                    TradeScreen(
+                        state = TradeState(),
+                        tradeType = TradeType.BUY,
+                        onAmountChange = {},
+                        onSubmitClick = {},
                     )
                 }
             }
