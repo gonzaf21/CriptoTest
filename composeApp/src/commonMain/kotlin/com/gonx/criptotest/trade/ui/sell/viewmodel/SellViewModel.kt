@@ -27,7 +27,7 @@ class SellViewModel(
     private val tempCoinId = "1" // TODO: Will be removed when passed as safe arg
     private val _amount = MutableStateFlow("")
     private val _state = MutableStateFlow(TradeState())
-    private val state = combine(
+    val state = combine(
         _state,
         _amount,
     ) { cState, amount ->
