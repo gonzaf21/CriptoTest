@@ -110,7 +110,7 @@ fun PortfolioCoinsList(
                     text = "💰 Owned coins: ",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    modifier = Modifier.weight(1f).padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -248,7 +248,7 @@ fun PortfolioBalanceSection(
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = MaterialTheme.typography.bodySmall.fontSize,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = cashBalance,
                     color = MaterialTheme.colorScheme.primary,
@@ -260,7 +260,7 @@ fun PortfolioBalanceSection(
                 Button(
                     onClick = onBuyButtonClick,
                     colors = ButtonDefaults.buttonColors(containerColor = LocalCriptoTestColorsPalette.current.profitGreen),
-                    contentPadding = PaddingValues(64.dp),
+                    contentPadding = PaddingValues(horizontal = 64.dp),
                 ) {
                     Text(
                         text = "Buy Coin",
@@ -270,6 +270,7 @@ fun PortfolioBalanceSection(
                 }
             }
         }
+
     }
 }
 
