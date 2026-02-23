@@ -41,6 +41,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -52,6 +53,9 @@ import com.gonx.criptotest.theme.LocalCriptoTestColorsPalette
 import com.gonx.criptotest.trade.ui.common.component.rememberCurrencyVisualTransformation
 import com.gonx.criptotest.trade.ui.common.model.TradeState
 import org.jetbrains.compose.resources.stringResource
+
+const val COIN_NAME_TEST_TAG = "trade_screen_coin_name"
+const val ERROR_TEST_TAG = "trade_error"
 
 @Composable
 fun TradeScreen(
@@ -110,9 +114,10 @@ fun TradeScreen(
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = state.coin?.name ?: "", style = MaterialTheme.typography.labelMedium,
+                    text = state.coin?.name ?: "",
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp).testTag(COIN_NAME_TEST_TAG)
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -136,7 +141,7 @@ fun TradeScreen(
                     text = stringResource(state.error),
                     style = MaterialTheme.typography.labelLarge,
                     color = LocalCriptoTestColorsPalette.current.lossRed,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp).testTag(ERROR_TEST_TAG)
                 )
             }
         }
