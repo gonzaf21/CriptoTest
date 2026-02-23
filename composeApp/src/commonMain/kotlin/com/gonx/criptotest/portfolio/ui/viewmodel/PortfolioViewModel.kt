@@ -4,24 +4,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gonx.criptotest.core.domain.DataError
 import com.gonx.criptotest.core.domain.Result
-import com.gonx.criptotest.core.util.formatCoinUnit
 import com.gonx.criptotest.core.util.formatFiat
-import com.gonx.criptotest.core.util.formatPercentage
 import com.gonx.criptotest.core.util.uiText
 import com.gonx.criptotest.portfolio.domain.PortfolioCoinModel
 import com.gonx.criptotest.portfolio.domain.PortfolioRepository
 import com.gonx.criptotest.portfolio.domain.toUiPortfolioCoinItem
 import com.gonx.criptotest.portfolio.ui.model.PortfolioState
-import com.gonx.criptotest.portfolio.ui.model.UiPortfolioCoinItem
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
 class PortfolioViewModel(
     private val portfolioRepository: PortfolioRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val _state = MutableStateFlow(PortfolioState(isLoading = true))
     val state: StateFlow<PortfolioState> = combine(
@@ -46,7 +47,7 @@ class PortfolioViewModel(
         }
     }.onStart {
         portfolioRepository.initializeBalance()
-    }.stateIn(
+    }.flowOn(coroutineDispatcher).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = PortfolioState(isLoading = true),
