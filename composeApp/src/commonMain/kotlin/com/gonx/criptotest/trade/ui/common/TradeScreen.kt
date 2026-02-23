@@ -2,6 +2,7 @@ package com.gonx.criptotest.trade.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +36,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -63,12 +71,18 @@ fun TradeScreen(
             TradeType.SELL -> "Sell Now"
         }
     }
+    val focusManager = LocalFocusManager.current
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -153,19 +167,20 @@ fun CenteredDollarTextField(
     amountText: String,
     onAmountChange: (String) -> Unit
 ) {
+    val controller = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
     val currencyVisualTransformation = rememberCurrencyVisualTransformation()
-    val displayText = amountText.trimStart('$')
+    val displayText by remember(amountText) { derivedStateOf { amountText.trimStart('$') } }
 
     BasicTextField(
         value = displayText,
         onValueChange = { newValue ->
             val trimmed = newValue.trimStart('0').trim { it.isDigit().not() }
-            if (trimmed.isEmpty() || trimmed.toInt() <= 10000) {
+            if (trimmed.isEmpty() || (trimmed.toIntOrNull() != null && trimmed.toIntOrNull()!! <= 10000)) {
                 onAmountChange(trimmed)
             }
         },
@@ -178,8 +193,13 @@ fun CenteredDollarTextField(
             textAlign = TextAlign.Center
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done,
         ),
+        keyboardActions = KeyboardActions(onDone = {
+            controller?.hide()
+            focusRequester.freeFocus()
+        }),
         decorationBox = { innerTextField ->
             Box(
                 contentAlignment = Alignment.Center,

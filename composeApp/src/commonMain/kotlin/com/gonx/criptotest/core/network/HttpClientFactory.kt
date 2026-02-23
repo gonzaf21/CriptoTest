@@ -6,6 +6,10 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.headers
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -27,6 +31,15 @@ object HttpClientFactory {
                 requestTimeoutMillis = 20_000L
             }
             install(HttpCache)
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.ALL
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println(message)
+                    }
+                }
+            }
             defaultRequest {
                 // TODO: Secure with secrets before uploading
                 headers { append("x-access-token", "")}

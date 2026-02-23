@@ -11,11 +11,13 @@ import com.gonx.criptotest.trade.domain.usecase.BuyCoinUseCase
 import com.gonx.criptotest.trade.mapper.toCoin
 import com.gonx.criptotest.trade.ui.common.model.TradeState
 import com.gonx.criptotest.trade.ui.common.model.UiTradeCoinItem
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,6 +45,9 @@ class BuyViewModel(
         started = SharingStarted.WhileSubscribed(),
         initialValue = TradeState(isLoading = true)
     )
+
+    private val _events = Channel<BuyEvent>(capacity = Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     private suspend fun getCoinsDetails(balance: Double) {
         when (val coinResponse = getCoinDetailsUseCase.execute(coinId)) {
@@ -87,7 +92,7 @@ class BuyViewModel(
 
             when (buyCoinResponse) {
                 is Result.Success -> {
-                    // TODO: Navigate to next screen with event
+                    _events.send(BuyEvent.BuySuccess)
                 }
 
                 is Result.Error -> {
@@ -101,4 +106,8 @@ class BuyViewModel(
             }
         }
     }
+}
+
+sealed interface BuyEvent {
+    data object BuySuccess : BuyEvent
 }
