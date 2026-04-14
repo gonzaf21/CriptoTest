@@ -83,6 +83,8 @@ class BuyViewModel(
 
     fun onBuyClick() {
         val tradeCoin = state.value.coin ?: return
+        if (_amount.value.isBlank()) return
+
         viewModelScope.launch {
             val buyCoinResponse = buyCoinUseCase(
                 coin = tradeCoin.toCoin(),
